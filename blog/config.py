@@ -11,3 +11,5 @@ class Config:
     DB_PASSWORD = os.environ.get("DB_PASSWORD", "blog")
     DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
     DB_PORT = os.environ.get("DB_PORT", "3306")
+
+    SALT_ROUNDS = os.environ.get("SALT_ROUNDS", 12)
