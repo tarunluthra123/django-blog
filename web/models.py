@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.template.defaultfilters import slugify
 from django.db import models
 from utils.codec import codec
@@ -79,8 +80,18 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower} follows {self.followee}"
 
+    def validate_unique(self, *args, **kwargs):
+        super().validate_unique(*args, **kwargs)
+        if Follow.objects.filter(
+            follower=self.follower, followee=self.followee
+        ).exists():
+            raise ValidationError("You already follow this user")
+
 
 class Like(models.Model):
+    class Meta:
+        unique_together = ("user", "article")
+
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
