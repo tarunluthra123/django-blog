@@ -5,3 +5,4 @@ from web.models import *
 admin.site.register(User)
 admin.site.register(Article)
 admin.site.register(ArticleTag)
+admin.site.register(Comment)
