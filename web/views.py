@@ -46,3 +46,9 @@ class ArticleListView(ListAPIView):
         if tag:
             return self.queryset.filter(tags__name=tag)
         return self.queryset
+
+
+class ArticleRetrieveView(RetrieveAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    lookup_field = "slug"

@@ -5,6 +5,7 @@ from web.views import (
     PingPongView,
     ProfileListView,
     ArticleListView,
+    ArticleRetrieveView,
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path("profiles/", ProfileListView.as_view()),
     path("profiles/<username>", ProfileRetrieveView.as_view()),
     path("articles/", ArticleListView.as_view()),
+    path("articles/<slug>", ArticleRetrieveView.as_view()),
 ]
