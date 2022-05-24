@@ -39,7 +39,7 @@ class Article(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.slug = slugify(self.title)
-            if Article.objects.filter(slug=self.slug)[0] != self:
+            if Article.objects.filter(slug=self.slug).first() != self:
                 number = random_number()
                 self.slug = slugify(f"{self.title}-{number}")
         super().save(*args, **kwargs)

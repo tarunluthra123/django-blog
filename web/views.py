@@ -30,6 +30,12 @@ class ArticleListView(ListAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 
-    def get(self, *args, **kwargs):
-        out = self.list(*args, **kwargs)
-        return out
+    def get_queryset(self, *args, **kwargs):
+        query_params = self.request.query_params
+        author = query_params.get("author")
+        tag = query_params.get("tag")
+        if author:
+            return self.queryset.filter(author__username=author)
+        if tag:
+            return self.queryset.filter(tags__name=tag)
+        return self.queryset
