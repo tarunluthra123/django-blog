@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from web.models import Article, User
 from web.serializers import ArticleSerializer, ProfileSerializer, UserSerializer
+from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 class PingPongView(APIView):
@@ -26,9 +27,15 @@ class ProfileListView(ListAPIView):
     serializer_class = ProfileSerializer
 
 
+class ArticlePagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "size"
+
+
 class ArticleListView(ListAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    pagination_class = ArticlePagination
 
     def get_queryset(self, *args, **kwargs):
         query_params = self.request.query_params
