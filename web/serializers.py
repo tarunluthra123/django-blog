@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from web.models import User, Article, ArticleTag
+from web.models import User, Article, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,3 +38,9 @@ class ArticleSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("id", "article", "body", "commenter", "created_at", "updated_at")

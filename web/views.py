@@ -1,8 +1,13 @@
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from web.models import Article, User
-from web.serializers import ArticleSerializer, ProfileSerializer, UserSerializer
+from web.models import Article, User, Comment
+from web.serializers import (
+    ArticleSerializer,
+    ProfileSerializer,
+    UserSerializer,
+    CommentSerializer,
+)
 from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
@@ -52,3 +57,12 @@ class ArticleRetrieveView(RetrieveAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     lookup_field = "slug"
+
+
+class CommentListView(ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        slug = self.kwargs.get("slug")
+        return self.queryset.filter(article__slug=slug)

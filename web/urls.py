@@ -6,6 +6,7 @@ from web.views import (
     ProfileListView,
     ArticleListView,
     ArticleRetrieveView,
+    CommentListView,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("profiles/<username>", ProfileRetrieveView.as_view()),
     path("articles/", ArticleListView.as_view()),
     path("articles/<slug>", ArticleRetrieveView.as_view()),
+    path("articles/<slug>/comments/", CommentListView.as_view()),
 ]
