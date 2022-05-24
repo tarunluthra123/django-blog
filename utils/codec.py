@@ -7,10 +7,10 @@ class Codec:
         self.salt = bcrypt.gensalt(rounds)
 
     def encrypt(self, data):
-        return bcrypt.hashpw(data.encode(), self.salt)
+        return bcrypt.hashpw(data.encode(), self.salt).decode()
 
     def compare(self, data, hashed):
-        return bcrypt.checkpw(data.encode(), hashed)
+        return bcrypt.checkpw(data.encode(), hashed.encode())
 
 
 codec = Codec(Config.SALT_ROUNDS)

@@ -1,5 +1,6 @@
 from django.urls import path
 from web.views import (
+    LoginView,
     ProfileRetrieveView,
     UserView,
     PingPongView,
@@ -12,6 +13,7 @@ from web.views import (
 urlpatterns = [
     path("ping/", PingPongView.as_view()),
     path("users/", UserView.as_view()),
+    path("users/login/", LoginView.as_view()),
     path("profiles/", ProfileListView.as_view()),
     path("profiles/<username>", ProfileRetrieveView.as_view()),
     path("articles/", ArticleListView.as_view()),

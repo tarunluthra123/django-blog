@@ -9,6 +9,7 @@ from web.serializers import (
     CommentSerializer,
 )
 from rest_framework.pagination import PageNumberPagination
+from utils.jwt import encode
 
 # Create your views here.
 class PingPongView(APIView):
@@ -66,3 +67,15 @@ class CommentListView(ListAPIView):
     def get_queryset(self, *args, **kwargs):
         slug = self.kwargs.get("slug")
         return self.queryset.filter(article__slug=slug)
+
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = User.objects.filter(username=username).first()
+        if user and user.check_password(password):
+            token = encode(user.to_dict())
+            serializer = UserSerializer(user)
+            return Response({"token": token, **serializer.data})
+        return Response({"error": "Invalid Credentials"}, status=401)

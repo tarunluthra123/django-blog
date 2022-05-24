@@ -13,3 +13,4 @@ class Config:
     DB_PORT = os.environ.get("DB_PORT", "3306")
 
     SALT_ROUNDS = os.environ.get("SALT_ROUNDS", 12)
+    JWT_SECRET = os.environ.get("JWT_SECRET", "abc")

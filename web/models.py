@@ -19,6 +19,12 @@ class User(models.Model):
         self.password = codec.encrypt(self.password)
         super().save(*args, **kwargs)
 
+    def check_password(self, password):
+        return codec.compare(password, self.password)
+
+    def to_dict(self):
+        return {"id": self.id, "username": self.username}
+
     def __str__(self):
         return self.username
 
