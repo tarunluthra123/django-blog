@@ -1,8 +1,8 @@
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from web.models import User
-from web.serializers import ProfileSerializer, UserSerializer
+from web.models import Article, User
+from web.serializers import ArticleSerializer, ProfileSerializer, UserSerializer
 
 # Create your views here.
 class PingPongView(APIView):
@@ -24,3 +24,12 @@ class ProfileRetrieveView(RetrieveAPIView):
 class ProfileListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
+
+
+class ArticleListView(ListAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+
+    def get(self, *args, **kwargs):
+        out = self.list(*args, **kwargs)
+        return out

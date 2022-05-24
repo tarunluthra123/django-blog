@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from web.models import User
+from web.models import User, Article, ArticleTag
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,3 +15,26 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "bio", "profile_pic")
+
+
+class ArticleTagListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.name
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    tags = ArticleTagListingField(many=True, read_only=True)
+
+    class Meta:
+        model = Article
+        fields = (
+            "id",
+            "tags",
+            "title",
+            "slug",
+            "subtitle",
+            "body",
+            "author",
+            "created_at",
+            "updated_at",
+        )
