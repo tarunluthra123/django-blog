@@ -1,8 +1,13 @@
 from rest_framework.permissions import BasePermission
-from utils.jwt import decode
-from jwt import DecodeError
 
 
 class IsAuthenticated(BasePermission):
     def has_permission(self, request, view):
+        return bool(request.user)
+
+
+class IsAuthenticatedOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method == "GET":
+            return True
         return bool(request.user)

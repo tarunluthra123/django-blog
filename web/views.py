@@ -1,4 +1,11 @@
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    RetrieveUpdateAPIView,
+    ListCreateAPIView,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from web.models import Article, User, Comment, ArticleTag
@@ -10,7 +17,7 @@ from web.serializers import (
 )
 from rest_framework.pagination import PageNumberPagination
 from utils.jwt import encode
-from web.permissions import IsAuthenticated
+from web.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 # Create your views here.
 class PingPongView(APIView):
@@ -55,19 +62,47 @@ class ArticleListView(ListAPIView):
         return self.queryset
 
 
-class ArticleRetrieveView(RetrieveAPIView):
+class ArticleRetrieveUpdateView(RetrieveUpdateAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     lookup_field = "slug"
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        article = self.get_object()
+        if article.author != user:
+            return Response(
+                {"message": "You are not authorized to edit this article"}, status=401
+            )
+        return self.partial_update(request, *args, **kwargs)
 
 
-class CommentListView(ListAPIView):
+class CommentListView(ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self, *args, **kwargs):
         slug = self.kwargs.get("slug")
         return self.queryset.filter(article__slug=slug)
+
+    def post(self, request, *args, **kwargs):
+        slug = self.kwargs.get("slug")
+        article = Article.objects.get(slug=slug)
+        commenter = request.user
+        body = request.data.get("body")
+        data = {
+            "article": article.id,
+            "commenter": commenter.id,
+            "body": body,
+        }
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(serializer.data, status=201)
 
 
 class LoginView(APIView):

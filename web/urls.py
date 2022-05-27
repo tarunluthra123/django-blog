@@ -6,7 +6,7 @@ from web.views import (
     PingPongView,
     ProfileListView,
     ArticleListView,
-    ArticleRetrieveView,
+    ArticleRetrieveUpdateView,
     CommentListView,
     ArticleCreateView,
 )
@@ -19,6 +19,6 @@ urlpatterns = [
     path("profiles/<username>", ProfileRetrieveView.as_view()),
     path("articles/", ArticleCreateView.as_view()),
     path("articles/", ArticleListView.as_view()),
-    path("articles/<slug>", ArticleRetrieveView.as_view()),
+    path("articles/<slug>/", ArticleRetrieveUpdateView.as_view()),
     path("articles/<slug>/comments/", CommentListView.as_view()),
 ]
