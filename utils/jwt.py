@@ -7,4 +7,4 @@ def encode(payload):
 
 
 def decode(token):
-    return jwt.decode(token, Config.JWT_SECRET)
+    return jwt.decode(token, Config.JWT_SECRET, algorithms=["HS256"])

@@ -1,7 +1,7 @@
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from web.models import Article, User, Comment
+from web.models import Article, User, Comment, ArticleTag
 from web.serializers import (
     ArticleSerializer,
     ProfileSerializer,
@@ -10,6 +10,7 @@ from web.serializers import (
 )
 from rest_framework.pagination import PageNumberPagination
 from utils.jwt import encode
+from web.permissions import IsAuthenticated
 
 # Create your views here.
 class PingPongView(APIView):
@@ -79,3 +80,27 @@ class LoginView(APIView):
             serializer = UserSerializer(user)
             return Response({"token": token, **serializer.data})
         return Response({"error": "Invalid Credentials"}, status=401)
+
+
+class ArticleCreateView(CreateAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        tags = data.pop("tags")
+
+        article = Article.objects.create(author=user, **data)
+
+        # tag_ids = []
+        # for tag in tags:
+        #     tag_ids.append(ArticleTag.objects.get_or_create(name=tag)[0])
+        tag_ids = map(lambda tag: ArticleTag.objects.get_or_create(name=tag)[0], tags)
+
+        article.tags.set(tag_ids)
+
+        serializer = ArticleSerializer(article)
+
+        return Response(serializer.data, status=201)

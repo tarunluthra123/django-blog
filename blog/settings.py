@@ -81,6 +81,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "web.authenticators.JWTAuthentication",
+    ],
+}
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
